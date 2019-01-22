@@ -2,8 +2,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  *
- * Version: 1.3.8
- *
+ * Version: 1.3.9 (https://github.com/TimShilov/jQuery-slimScroll)
  */
 (function($) {
 
@@ -220,24 +219,24 @@
 
         // make it draggable and no longer dependent on the jqueryUI
         if (o.railDraggable){
-          bar.bind("mousedown", function(e) {
+          bar.on("mousedown", function(e) {
             var $doc = $(document);
             isDragg = true;
             t = parseFloat(bar.css('top'));
             pageY = e.pageY;
 
-            $doc.bind("mousemove.slimscroll", function(e){
+            $doc.on("mousemove.slimscroll", function(e){
               currTop = t + e.pageY - pageY;
               bar.css('top', currTop);
               scrollContent(0, bar.position().top, false);// scroll content
             });
 
-            $doc.bind("mouseup.slimscroll", function(e) {
+            $doc.on("mouseup.slimscroll", function(e) {
               isDragg = false;hideBar();
-              $doc.unbind('.slimscroll');
+              $doc.off('.slimscroll');
             });
             return false;
-          }).bind("selectstart.slimscroll", function(e){
+          }).on("selectstart.slimscroll", function(e){
             e.stopPropagation();
             e.preventDefault();
             return false;
@@ -245,31 +244,31 @@
         }
 
         // on rail over
-        rail.hover(function(){
+        rail.on("mouseenter", function(){
           showBar();
-        }, function(){
+        }).on("mouseleave", function(){
           hideBar();
         });
 
         // on bar over
-        bar.hover(function(){
+        bar.on("mouseenter", function(){
           isOverBar = true;
-        }, function(){
+        }).on("mouseleave", function(){
           isOverBar = false;
         });
 
         // show on parent mouseover
-        me.hover(function(){
+        me.on("mouseenter", function(){
           isOverPanel = true;
           showBar();
           hideBar();
-        }, function(){
+        }).on("mouseleave", function(){
           isOverPanel = false;
           hideBar();
         });
 
         // support for mobile
-        me.bind('touchstart', function(e,b){
+        me.on('touchstart', function(e,b){
           if (e.originalEvent.touches.length)
           {
             // record where touch started
@@ -277,7 +276,7 @@
           }
         });
 
-        me.bind('touchmove', function(e){
+        me.on('touchmove', function(e){
           // prevent scrolling the page if necessary
           if(!releaseScroll)
           {
@@ -417,7 +416,7 @@
           clearTimeout(queueHide);
 
           // when bar reached top or bottom
-          if (percentScroll == ~~percentScroll)
+          if (Math.min(percentScroll, 1) == ~~percentScroll)
           {
             //release wheel
             releaseScroll = o.allowPageScroll;
